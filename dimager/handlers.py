@@ -1,0 +1,11 @@
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth.models import User
+from dimager.models import ImagerProfile
+
+
+@receiver(post_save, sender=User)
+def create_profile(sender, instance, *args, **kwargs):
+    if kwargs["created"]:
+        new_profile = ImagerProfile(user=instance)
+        new_profile.save()
