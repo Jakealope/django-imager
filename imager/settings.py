@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'dimager',
     'imager_images',
     'registration',
+    'sorl.thumbnail',
 
 )
 
@@ -64,7 +65,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'djangoimager',
-        'USER': 'ndraper2',
+        'USER': 'aabulota',
     }
 }
 

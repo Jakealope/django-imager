@@ -2,6 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.utils.encoding import python_2_unicode_compatible
+from django.core.files.uploadedfile import SimpleUploadedFile
+import os
+from PIL import Image
+from cStringIO import StringIO
 
 
 class ActiveImagerManager(models.Manager):
@@ -70,3 +74,35 @@ class ImagerProfile(models.Model):
     def unblock(self, user_prof):
         '''Unblock user relationship'''
         self.blocking.remove(user_prof)
+
+    def create_thumbnail(self):
+        '''Creates Thumbnail of images'''
+        if not self.picture:
+            return
+        THUMBNAIL_SIZE = (200, 200)
+        DJANGO_TYPE = self.picture.file.content_type
+
+        if DJANGO_TYPE == 'image/jpeg':
+            PIL_TYPE = 'jpeg'
+            FILE_EXTENSION = 'jpg'
+        elif DJANGO_TYPE == 'image/png':
+            PIL_TYPE = 'png'
+            FILE_EXTENSION = 'png'
+
+        image = Image.open(StringIO(self.image.read()))
+        # Image.ANITALIAS makes the image look better, preventing artifacts.
+        image.thumbnail(THUMBNAIL_SIZE, Image.ANTIALIAS)
+
+        temp_handle = StringIO()
+        image.save(temp_handle, PIL_TYPE)
+        temp_handle.seek(0)
+
+        suf = SimpleUploadedFile(os.path.split(self.image.name)[-1],
+                                 temp_handle.read(), content_type=DJANGO_TYPE)
+
+        self.thumbnail.save('%s_thumbnail.%s'%(os.path.splitext(suf.name)[0],FILE_EXTENSION), suf, save=False)
+
+    def save(self):
+        self.create_thumbnail()
+
+        super(ImagerProfile, self).save()
