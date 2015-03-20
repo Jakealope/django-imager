@@ -63,13 +63,14 @@ class Album(models.Model):
     )
 
     cover = models.ForeignKey(Photo, blank=True, related_name='+', null=True)
-    # def get_cover_photo(self):
-    #     if self.photo_set.filter(is_cover_photo=True).count() > 0:
-    #         return self.photo_set.filter(is_cover_photo=True)[0]
-    #     elif self.photo_set.all().count() > 0:
-    #         return self.photo_set.all()[0]
-    #     else:
-    #         return None
+
+    def get_cover_photo(self):
+        if self.photo_set.filter(is_cover_photo=True).count() > 0:
+            return self.photo_set.filter(is_cover_photo=True)[0]
+        elif self.photo_set.all().count() > 0:
+            return self.photo_set.all()[0]
+        else:
+            return None
 
     def __str__(self):
         return str(self.title)

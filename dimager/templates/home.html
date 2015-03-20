@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>The Three Best Friends That Anyone Could Ever Have</title>
+    </head>
+
+    <body>
+    <header>
+        <h1 id="headerTitle"><a href="{% url 'home' %}">Imgr</a></h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                {% if not user.is_authenticated %}
+                    <li><a href="{% url 'auth_login' %}">Login</a></li>
+                    <li><a href="{% url 'registration_register' %}">Join</a></li>
+                {% else %}
+                    <li><a href="{% url 'auth_logout' %}?next=/">Logout</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    <div id="sidebar">
+    </div>
+    <div id="content">
+        {% block body %}
+            <div id="coverPhoto" style="background-image: url({{cover_photo_url}});"></div>
+            <div id="text">
+                Welcome to Imgr! Sign up to share images and be awesome!
+            </div>
+        {% endblock %}
+    </div>
+</body>
+</html>

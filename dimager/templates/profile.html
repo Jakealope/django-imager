@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load thumbnail %}
+{% block content %}
+
+
+<div id='profile_content'>
+    <h1>Welcome, {% if user.first_name %}{{user.first_name}}{% else %}{{user}}{% endif %}!</h1>
+
+    <div id='profile_built'>
+        <div id='profile_picture_area'>
+            {% if profile.picture %}
+            <img class='profile_pic' src="{{ profile.picture.url }}" /></br>
+            {% else %}
+            <img class='profile_pic' src="{% static '/media/photos/strongbad.jpg' %}" /></br>
+            {% endif %}
+        </div>
+        <div class="information">
+            Date Joined: {{profile.user.date_joined|date:"M. d, Y"}}</br>
+            Birthday: {{profile.birthday}}</br>
+            Phone: {{profile.phone_number}}</br>
+            Followers: {{following}}</br>
+            Albums: {{num_album}}</br>
+            Photos: {{num_photo}}
+        </div>
+        <div class="links">
+             <a href="{{ '/library' }}">{% if user.first_name %}{{ user.first_name }}{% else %}{{ user }}{% endif %}'s Library</a>
+             <a href="{{ '/stream' }}">{% if user.first_name %}{{ user.first_name }}{% else %}{{ user }}{% endif %}'s Stream</a>
+        </div>
+    </div>
+</div>
+
+<div id='profile_albums'>
+   <h2>{% if user.first_name and not profile.name_privacy %}{{ user.first_name }}{% else %}{{ user }}{% endif %}'s Albums</h2>
+   {% for album in albums %}
+       {% thumbnail album.cover.picture "100x100" crop="center" as im %}
+           <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+       {% empty %}
+           <img src="{% static '/media/images/git.jpg' %}" height="100" width="100"/>
+       {% endthumbnail %}
+   {% endfor %}
+</div>
+{% endblock %}
+

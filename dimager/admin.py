@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from dimager.models import ImagerProfile
+# from dimager.models import UserAdmin
+# from dimager.models import profileAdmin
 
 
 class ImagerProfileInline(admin.StackedInline):
@@ -20,3 +22,4 @@ class profileAdmin(admin.ModelAdmin):
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
+admin.site.register(ImagerProfile)

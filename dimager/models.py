@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.utils.encoding import python_2_unicode_compatible
+from imager_images.models import Photo
 
 
 class ActiveImagerManager(models.Manager):
@@ -70,3 +71,8 @@ class ImagerProfile(models.Model):
     def unblock(self, user_prof):
         '''Unblock user relationship'''
         self.blocking.remove(user_prof)
+
+    def get_profile_stream(self):
+        return Photo.objects.filter(profile=self).order_by('date_uploaded')
+
+    
