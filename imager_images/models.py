@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.contrib import admin
 from django.utils.encoding import python_2_unicode_compatible
 
 
@@ -12,7 +11,7 @@ class Photo(models.Model):
     description = models.TextField(blank=True)
     date_uploaded = models.DateField(auto_now_add=True, null=True, blank=True)
     date_modified = models.DateField(auto_now=True, null=True, blank=True)
-    date_publishd = models.DateField(null=True, blank=True)
+    date_published = models.DateField(null=True, blank=True)
 
     PRIVATE = 'private'
     SHARED = 'shared'
@@ -39,13 +38,13 @@ class Album(models.Model):
     pictures = models.ManyToManyField(
         Photo,
         related_name='album',
-        # limit_choices_to={user: 'self'}
+        limit_choices_to={'user': user}
     )
     title = models.CharField(max_length=100, blank=True)
     description = models.TextField(blank=True)
     date_created = models.DateField(auto_now_add=True, null=True, blank=True)
     date_modified = models.DateField(auto_now=True, null=True, blank=True)
-    date_publishd = models.DateField(null=True, blank=True)
+    date_published = models.DateField(null=True, blank=True)
 
     PRIVATE = 'private'
     SHARED = 'shared'
@@ -63,6 +62,12 @@ class Album(models.Model):
     )
 
     cover = models.ForeignKey(Photo, blank=True, related_name='+', null=True)
+
+    def designate_cover(self, photo):
+        if photo in self.pictures.all():
+            self.cover = photo
+        else:
+            raise AttributeError("The photo isn't part of this album!")
     # def get_cover_photo(self):
     #     if self.photo_set.filter(is_cover_photo=True).count() > 0:
     #         return self.photo_set.filter(is_cover_photo=True)[0]
